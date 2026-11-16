@@ -49,29 +49,95 @@ document.querySelectorAll(".saga").forEach(btn => {
 renderSaga(0);
 
 // ===== Personajes =====
+// Imágenes: static/img/personajes/. Para usar tu propia imagen, ponla ahí y cambia el campo "img" (p. ej. "goku.png").
+const IMG_DIR = "/static/img/personajes/";
 const personajes = [
-  { nombre: "Goku", tipo: "heroe", color: "#ff8a00", desc: "Saiyajin criado en la Tierra. Alegre, ingenuo y obsesionado con hacerse más fuerte. Su técnica estrella es el Kamehameha." },
-  { nombre: "Vegeta", tipo: "heroe", color: "#3fa9ff", desc: "El orgulloso príncipe de los Saiyajin. Empieza como enemigo y termina siendo un aliado, siempre compitiendo con Goku." },
-  { nombre: "Gohan", tipo: "heroe", color: "#8f6bff", desc: "Hijo de Goku. Tranquilo y estudioso, pero con un potencial oculto enorme que despierta cuando más se necesita." },
-  { nombre: "Piccolo", tipo: "heroe", color: "#3ddc84", desc: "Namekiano que pasó de rival a mentor de Gohan. Estratega, serio y uno de los pilares de los Guerreros Z." },
-  { nombre: "Trunks", tipo: "heroe", color: "#b18cff", desc: "Hijo de Vegeta y Bulma que viaja desde un futuro devastado para advertir a los héroes." },
-  { nombre: "Freezer", tipo: "villano", color: "#ff4dc4", desc: "Emperador del universo, frío y cruel. Responsable de la destrucción del planeta de los Saiyajin." },
-  { nombre: "Cell", tipo: "villano", color: "#2fbf71", desc: "Creación del Dr. Gero hecha con células de grandes guerreros. Busca la perfección absorbiendo a los androides." },
-  { nombre: "Majin Buu", tipo: "villano", color: "#ff7ab8", desc: "Ser mágico de poder caótico, capaz de regenerarse casi de cualquier cosa. Tiene varias formas, cada una más peligrosa." }
+  { nombre: 'Goku', img: 'goku.svg', tipo: 'heroe', color: '#ff8a00',
+    desc: 'Saiyajin criado en la Tierra. Alegre, ingenuo y obsesionado con hacerse más fuerte.',
+    poderes: ['Kamehameha', 'Genkidama', 'Teletransportación instantánea', 'Kaioken', 'Super Saiyajin 1, 2 y 3'],
+    historia: 'Enviado de bebé a la Tierra con el nombre Kakarotto, fue criado por el abuelo Gohan. Entrena con el Maestro Roshi y Kaiosama, derrota a Freezer en Namek y es clave en las sagas de Cell y Majin Buu.' },
+  { nombre: 'Vegeta', img: 'vegeta.svg', tipo: 'heroe', color: '#3fa9ff',
+    desc: 'El orgulloso príncipe de los Saiyajin. Empieza como enemigo y termina siendo un aliado.',
+    poderes: ['Final Flash', 'Galick Ho', 'Big Bang Attack', 'Super Saiyajin 1 y 2'],
+    historia: 'Llega a la Tierra con Nappa para conseguir las esferas. Tras ser derrotado se une a los héroes de forma intermitente, forma una familia con Bulma y se convierte en el eterno rival de Goku.' },
+  { nombre: 'Gohan', img: 'gohan.svg', tipo: 'heroe', color: '#8f6bff',
+    desc: 'Hijo de Goku. Tranquilo y estudioso, con un potencial oculto enorme.',
+    poderes: ['Masenko', 'Kamehameha', 'Super Saiyajin 2', 'Potencial desbloqueado'],
+    historia: 'Secuestrado por Raditz de niño, entrena con Piccolo y sobrevive en Namek. En los Juegos de Cell libera su poder y vence a Cell con un Kamehameha junto a su padre desde el más allá.' },
+  { nombre: 'Piccolo', img: 'piccolo.svg', tipo: 'heroe', color: '#3ddc84',
+    desc: 'Namekiano que pasó de rival a mentor de Gohan. Estratega y serio.',
+    poderes: ['Makankosappo', 'Regeneración', 'Brazos extensibles', 'Fusión con otros namekianos'],
+    historia: 'Nace del Rey Piccolo justo antes de que este muriera. Se enfrenta a Goku en el Torneo, luego entrena a Gohan y se convierte en uno de los pilares de los Guerreros Z.' },
+  { nombre: 'Trunks', img: 'trunks.svg', tipo: 'heroe', color: '#b18cff',
+    desc: 'Hijo de Vegeta y Bulma que viaja desde un futuro devastado.',
+    poderes: ['Ataque con espada', 'Super Saiyajin', 'Ráfagas de ki'],
+    historia: 'Viaja en una máquina del tiempo para avisar a los héroes sobre los androides. Derrota a Freezer a su llegada y lucha por cambiar su futuro.' },
+  { nombre: 'Krilin', img: 'krilin.svg', tipo: 'heroe', color: '#ffb347',
+    desc: 'El mejor amigo de Goku y el humano más fuerte de la Tierra.',
+    poderes: ['Kienzan (Disco Destructor)', 'Kamehameha', 'Gran control del ki'],
+    historia: 'Compañero de entrenamiento de Goku con el Maestro Roshi. Muere varias veces y es revivido, se casa con la Androide 18 y tiene una hija, Marron.' },
+  { nombre: 'Bulma', img: 'bulma.svg', tipo: 'heroe', color: '#29c7c9',
+    desc: 'Genio científica y heredera de la Corporación Cápsula.',
+    poderes: ['Radar del Dragón', 'Máquina del tiempo', 'Ingenio e inventos'],
+    historia: 'Conoce a Goku buscando las esferas del dragón. Con su inteligencia ayuda a localizarlas, viaja a Namek y construye la tecnología que sostiene a los héroes.' },
+  { nombre: 'Maestro Roshi', img: 'roshi.svg', tipo: 'heroe', color: '#2fbf71',
+    desc: 'Ermitaño legendario de las artes marciales y creador del Kamehameha.',
+    poderes: ['Kamehameha', 'Mafuba', 'Gran técnica marcial'],
+    historia: 'Vive en la isla Kame House y es maestro de Goku y Krilin. En el torneo participa disfrazado como Jackie Chun y ayuda en peleas decisivas.' },
+  { nombre: 'Tenshinhan', img: 'tenshinhan.svg', tipo: 'heroe', color: '#3ddc84',
+    desc: 'Guerrero de tres ojos que pasó de rival a aliado leal.',
+    poderes: ['Kikoho', 'Taiyoken (destello solar)', 'Tercer ojo'],
+    historia: 'Empieza como rival de Goku, entrenado en la Escuela de la Grulla. Después se une a los Guerreros Z junto a su amigo Chaoz.' },
+  { nombre: 'Freezer', img: 'freezer.svg', tipo: 'villano', color: '#ff4dc4',
+    desc: 'Emperador del universo, frío y cruel.',
+    poderes: ['Rayo mortal', 'Supernova', 'Varias transformaciones'],
+    historia: 'Destruye el planeta de los Saiyajin y gobierna con terror. En Namek lo enfrentan Goku y sus amigos, y su derrota marca el despertar del Super Saiyajin.' },
+  { nombre: 'Cell', img: 'cell.svg', tipo: 'villano', color: '#2fbf71',
+    desc: 'Creación del Dr. Gero hecha con células de grandes guerreros.',
+    poderes: ['Regeneración', 'Absorción', 'Kamehameha'],
+    historia: 'Un ser bio-artificial que absorbe a los androides para alcanzar su forma perfecta. Organiza los Juegos de Cell y es derrotado por Gohan.' },
+  { nombre: 'Majin Buu', img: 'majin-buu.svg', tipo: 'villano', color: '#ff7ab8',
+    desc: 'Ser mágico de poder caótico, capaz de regenerarse casi de cualquier cosa.',
+    poderes: ['Regeneración', 'Magia', 'Varias formas'],
+    historia: 'Despertado por Babidi, siembra el caos en la Tierra. Solo una Genkidama alimentada por todo el universo logra acabar con él.' },
+  { nombre: 'Raditz', img: 'raditz.svg', tipo: 'villano', color: '#6b6bd6',
+    desc: 'Hermano de Goku y primer enemigo Saiyajin de la serie.',
+    poderes: ['Doble Sundae', 'Fuerza Saiyajin'],
+    historia: 'Llega a la Tierra para reclutar a Goku, pero este se niega. Secuestra a Gohan y es derrotado cuando Goku y Piccolo unen fuerzas.' },
+  { nombre: 'Dr. Gero', img: 'gero.svg', tipo: 'villano', color: '#9aa0b5',
+    desc: 'Científico del Ejército de la Cinta Roja y creador de los androides.',
+    poderes: ['Androides y ciencia avanzada', 'Absorción de energía'],
+    historia: 'Obsesionado con vengarse de Goku, crea a los Androides 17 y 18 y desarrolla a Cell. Su proyecto termina volviéndose contra él.' },
 ];
 
 const cards = document.getElementById("cards");
 function renderCards(filtro = "todos") {
   cards.innerHTML = personajes
     .filter(p => filtro === "todos" || p.tipo === filtro)
-    .map(p => `
+    .map((p, i) => `
       <article class="card" style="--c:${p.color}">
-        <div class="avatar">${p.nombre[0]}</div>
+        <img class="foto" src="${IMG_DIR}${p.img}" alt="${p.nombre}" loading="lazy">
         <span class="tag ${p.tipo}">${p.tipo === "heroe" ? "Héroe" : "Villano"}</span>
         <h3>${p.nombre}</h3>
         <p>${p.desc}</p>
+        <button class="more" aria-expanded="false" aria-controls="det-${i}">Ver más ▾</button>
+        <div class="detalle" id="det-${i}">
+          <div class="detalle-inner">
+            <h4>Poderes</h4>
+            <ul>${p.poderes.map(x => `<li>${x}</li>`).join("")}</ul>
+            <h4>Historia</h4>
+            <p>${p.historia}</p>
+          </div>
+        </div>
       </article>`).join("");
 }
+cards.addEventListener("click", e => {
+  const btn = e.target.closest(".more");
+  if (!btn) return;
+  const abierto = btn.nextElementSibling.classList.toggle("open");
+  btn.setAttribute("aria-expanded", abierto);
+  btn.textContent = abierto ? "Ver menos ▴" : "Ver más ▾";
+});
 document.querySelectorAll(".filter").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".filter").forEach(b => b.classList.remove("active"));

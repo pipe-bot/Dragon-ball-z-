@@ -8,9 +8,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="static/css/styles.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
+  <div class="night-bg" aria-hidden="true"></div>
 
   <!-- ===== NAV ===== -->
   <header class="nav">
@@ -103,6 +104,6 @@
     <p>Dragon Ball Z y sus personajes pertenecen a sus respectivos dueños (Akira Toriyama / Bird Studio, Shueisha, Toei Animation).</p>
   </footer>
 
-  <script src="static/js/main.js"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
