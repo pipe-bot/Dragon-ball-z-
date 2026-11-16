@@ -6,6 +6,7 @@ Uso:
     pip install -r requirements.txt
     python app.py
 """
+
 import os
 
 from flask import Flask, render_template

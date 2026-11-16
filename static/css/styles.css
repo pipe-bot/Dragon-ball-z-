@@ -16,7 +16,7 @@
 html { scroll-behavior: smooth; }
 body {
   font-family: "Nunito", system-ui, sans-serif;
-  background: var(--bg);
+  background: #050816;
   color: var(--text);
   line-height: 1.6;
 }
@@ -44,7 +44,7 @@ a { color: inherit; text-decoration: none; }
   position: relative; overflow: hidden;
   min-height: 88vh; display: grid; place-items: center;
   padding: 60px 6vw; text-align: center;
-  background: radial-gradient(ellipse at bottom, #1f2a6b 0%, var(--bg) 70%);
+  background: radial-gradient(ellipse at bottom, rgba(31,42,107,.5) 0%, transparent 70%);
 }
 .aura {
   position: absolute; width: 520px; height: 520px; border-radius: 50%;
@@ -75,7 +75,7 @@ a { color: inherit; text-decoration: none; }
 
 /* ===== Secciones ===== */
 .section { padding: 90px 6vw; }
-.section-alt { background: var(--bg-alt); }
+.section-alt { background: rgba(18, 26, 61, .78); }
 .section-title { font-size: clamp(2.2rem, 5vw, 3.4rem); text-align: center; color: var(--yellow); }
 .section-sub { text-align: center; color: var(--muted); margin: 8px 0 32px; }
 
@@ -169,7 +169,7 @@ a { color: inherit; text-decoration: none; }
 .quiz .result .score { font-family: "Bangers", cursive; font-size: 4rem; color: var(--yellow); }
 
 /* ===== Footer ===== */
-.footer { text-align: center; padding: 40px 6vw; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--card); }
+.footer { background: rgba(11, 16, 38, .88); text-align: center; padding: 40px 6vw; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--card); }
 
 /* ===== Responsive ===== */
 @media (max-width: 760px) {
@@ -182,3 +182,26 @@ a { color: inherit; text-decoration: none; }
   .nav-links a { padding: 14px 6vw; border-top: 1px solid var(--card); }
   .sagas { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ===== Fondo nocturno (Kame House) ===== */
+.night-bg {
+  position: fixed; inset: 0; z-index: -1;
+  background: linear-gradient(rgba(5, 8, 22, .25), rgba(5, 8, 22, .45)),
+              url("../img/fondo-noche.svg") center bottom / cover no-repeat, #050816;
+}
+
+/* ===== Tarjetas con foto y detalle ===== */
+.cards { align-items: start; }
+.foto { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 12px; margin-bottom: 14px; box-shadow: 0 0 18px var(--c, var(--orange)); }
+.more {
+  margin-top: 14px; width: 100%; padding: 9px; cursor: pointer; font: inherit; font-weight: 700;
+  background: transparent; color: var(--c, var(--orange)); border: 2px solid var(--c, var(--orange)); border-radius: 999px;
+  transition: background .2s, color .2s;
+}
+.more:hover { background: var(--c, var(--orange)); color: #0b1026; }
+.detalle { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s ease; }
+.detalle.open { grid-template-rows: 1fr; }
+.detalle-inner { overflow: hidden; visibility: hidden; transition: visibility .35s; }
+.detalle.open .detalle-inner { visibility: visible; }
+.detalle h4 { font-family: "Bangers", cursive; letter-spacing: 1px; color: var(--yellow); font-size: 1.2rem; margin: 14px 0 4px; }
+.detalle ul { padding-left: 20px; color: var(--muted); font-size: .92rem; }
