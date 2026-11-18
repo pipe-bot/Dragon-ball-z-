@@ -1,12 +1,3 @@
-"""Servidor mínimo con Flask para la página fan de Dragon Ball Z.
-
-Uso:
-    python -m venv venv
-    source venv/bin/activate        # En Windows: venv\\Scripts\\activate
-    pip install -r requirements.txt
-    python app.py
-"""
-
 import os
 
 from flask import Flask, render_template

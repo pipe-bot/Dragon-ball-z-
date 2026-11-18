@@ -116,7 +116,8 @@ function renderCards(filtro = "todos") {
     .filter(p => filtro === "todos" || p.tipo === filtro)
     .map((p, i) => `
       <article class="card" style="--c:${p.color}">
-        <img class="foto" src="${IMG_DIR}${p.img}" alt="${p.nombre}" loading="lazy">
+            <img class="foto" src="${IMG_DIR}${p.img.replace(/\.\w+$/, '.jpg')}" alt="${p.nombre}" loading="lazy"
+            onerror="this.onerror=null; this.src='${IMG_DIR}${p.img.replace(/\.\w+$/, '.svg')}'">
         <span class="tag ${p.tipo}">${p.tipo === "heroe" ? "Héroe" : "Villano"}</span>
         <h3>${p.nombre}</h3>
         <p>${p.desc}</p>

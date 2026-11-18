@@ -185,9 +185,11 @@ a { color: inherit; text-decoration: none; }
 
 /* ===== Fondo nocturno (Kame House) ===== */
 .night-bg {
+  transform: translateZ(0);
+  will-change: transform;
   position: fixed; inset: 0; z-index: -1;
   background: linear-gradient(rgba(5, 8, 22, .25), rgba(5, 8, 22, .45)),
-              url("../img/fondo-noche.svg") center bottom / cover no-repeat, #050816;
+              url("../img/fondo-ball.jpg") center bottom / cover no-repeat, #050816;
 }
 
 /* ===== Tarjetas con foto y detalle ===== */
