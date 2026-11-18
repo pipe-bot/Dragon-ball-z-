@@ -155,7 +155,14 @@ const kiFill = document.getElementById("ki-fill");
 const kiLevel = document.getElementById("ki-level");
 const kiMsg = document.getElementById("ki-msg");
 const kiBtn = document.getElementById("ki-btn");
-let ki = 0, charging = false, timer = null;
+const kiForm = document.getElementById("ki-form");
+const kiRecord = document.getElementById("ki-record");
+const kiFire = document.getElementById("ki-fire");
+const kiBeam = document.getElementById("ki-beam");
+let ki = 0, charging = false, firing = false, timer = null;
+let record = 0;
+try { record = Number(localStorage.getItem("kiRecord")) || 0; } catch (e) {}
+kiRecord.textContent = record.toLocaleString("es");
 
 const mensajes = [
   [0, "Concéntrate…"],
@@ -165,23 +172,46 @@ const mensajes = [
   [90, "¡Casi al límite!"],
   [100, "¡¡Es más de 9000!!"]
 ];
+const formas = [
+  [0, "Base"],
+  [25, "Super Saiyajin"],
+  [50, "Super Saiyajin 2"],
+  [75, "Super Saiyajin 3"],
+  [100, "Ultra Instinto"]
+];
+
+function guardarRecord() {
+  try { localStorage.setItem("kiRecord", record); } catch (e) {}
+}
 
 function updateKi() {
+  const poder = Math.round(ki * 92);
+  const nivel = formas.filter(([min]) => ki >= min).length - 1;
   kiFill.style.width = ki + "%";
   kiOrb.style.setProperty("--p", ki);
-  kiLevel.textContent = Math.round(ki * 92).toLocaleString("es");
+  kiLevel.textContent = poder.toLocaleString("es");
   kiMsg.textContent = mensajes.filter(([min]) => ki >= min).pop()[1];
+  kiForm.textContent = formas[nivel][1];
+  kiBox.dataset.nivel = nivel;
   kiBox.classList.toggle("max", ki >= 100);
+  kiFire.hidden = ki < 100 || firing;
+  if (poder > record) {
+    record = poder;
+    kiRecord.textContent = record.toLocaleString("es");
+  }
 }
 function startCharge() {
-  if (charging) return;
+  if (charging || firing) return;
   charging = true;
+  kiBox.classList.add("cargando");
   clearInterval(timer);
   timer = setInterval(() => { ki = Math.min(100, ki + 1.5); updateKi(); }, 40);
 }
 function stopCharge() {
   if (!charging) return;
   charging = false;
+  kiBox.classList.remove("cargando");
+  guardarRecord();
   clearInterval(timer);
   timer = setInterval(() => {
     if (ki >= 100) return clearInterval(timer); // al máximo se queda cargado
@@ -195,8 +225,29 @@ document.addEventListener("keydown", e => {
   if (e.code === "Space" && e.target === document.body) { e.preventDefault(); startCharge(); }
 });
 document.addEventListener("keyup", e => { if (e.code === "Space") stopCharge(); });
+
+kiFire.addEventListener("click", () => {
+  if (ki < 100 || firing) return;
+  firing = true;
+  clearInterval(timer);
+  guardarRecord();
+  kiFire.hidden = true;
+  kiMsg.textContent = "¡¡KA-ME-HA-ME-HAAA!!";
+  kiBeam.classList.add("fire");
+  setTimeout(() => {
+    kiBeam.classList.remove("fire");
+    firing = false;
+    ki = 0;
+    updateKi();
+  }, 900);
+});
+
 document.getElementById("ki-reset").addEventListener("click", () => {
-  clearInterval(timer); charging = false; ki = 0; updateKi();
+  clearInterval(timer);
+  charging = false; firing = false;
+  kiBeam.classList.remove("fire");
+  kiBox.classList.remove("cargando");
+  ki = 0; updateKi();
 });
 updateKi();
 
