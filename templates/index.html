@@ -81,16 +81,21 @@
   <!-- ===== CARGAR KI ===== -->
   <section id="ki" class="section section-alt">
     <h2 class="section-title">Carga tu ki</h2>
-    <p class="section-sub">Mantén presionado el botón (o la barra espaciadora) para acumular energía.</p>
+        <p class="section-sub">Mantén presionado el botón (o la barra espaciadora) para acumular energía. ¡Al llegar al 100% puedes disparar un Kamehameha!</p>
     <div class="ki-box">
-      <div class="ki-orb" id="ki-orb" aria-hidden="true"></div>
+      <div class="ki-stage">
+        <div class="ki-orb" id="ki-orb" aria-hidden="true"></div>
+        <div class="ki-beam" id="ki-beam" aria-hidden="true"></div>
+      </div>
+      <p class="ki-form" id="ki-form">Base</p>
       <div class="ki-meter"><div class="ki-fill" id="ki-fill"></div></div>
       <p class="ki-level">Nivel de poder: <strong id="ki-level">0</strong></p>
+      <p class="ki-record">Récord: <strong id="ki-record">0</strong></p>
       <p class="ki-msg" id="ki-msg">Concéntrate…</p>
       <button class="btn btn-primary" id="ki-btn">¡Cargar!</button>
+      <button class="btn btn-primary" id="ki-fire" hidden>¡Kamehameha!</button>
       <button class="btn btn-ghost" id="ki-reset">Reiniciar</button>
     </div>
-  </section>
 
   <!-- ===== TRIVIA ===== -->
   <section id="trivia" class="section">
