@@ -116,7 +116,8 @@ function renderCards(filtro = "todos") {
     .filter(p => filtro === "todos" || p.tipo === filtro)
     .map((p, i) => `
       <article class="card" style="--c:${p.color}">
-        <img class="foto" src="${IMG_DIR}${p.img}" alt="${p.nombre}" loading="lazy">
+            <img class="foto" src="${IMG_DIR}${p.img.replace(/\.\w+$/, '.jpg')}" alt="${p.nombre}" loading="lazy"
+            onerror="this.onerror=null; this.src='${IMG_DIR}${p.img.replace(/\.\w+$/, '.svg')}'">
         <span class="tag ${p.tipo}">${p.tipo === "heroe" ? "Héroe" : "Villano"}</span>
         <h3>${p.nombre}</h3>
         <p>${p.desc}</p>
@@ -154,7 +155,16 @@ const kiFill = document.getElementById("ki-fill");
 const kiLevel = document.getElementById("ki-level");
 const kiMsg = document.getElementById("ki-msg");
 const kiBtn = document.getElementById("ki-btn");
-let ki = 0, charging = false, timer = null;
+const kiForm = document.getElementById("ki-form");
+const kiRecord = document.getElementById("ki-record");
+const kiFire = document.getElementById("ki-fire");
+const kiBeam = document.getElementById("ki-beam");
+const kiOnda = document.getElementById("ki-onda");
+const kiFlash = document.getElementById("ki-flash");
+let ki = 0, nivelPrev = 0, charging = false, firing = false, timer = null, fireWait = null;
+let record = 0;
+try { record = Number(localStorage.getItem("kiRecord")) || 0; } catch (e) {}
+kiRecord.textContent = record.toLocaleString("es");
 
 const mensajes = [
   [0, "Concéntrate…"],
@@ -164,23 +174,62 @@ const mensajes = [
   [90, "¡Casi al límite!"],
   [100, "¡¡Es más de 9000!!"]
 ];
+const formas = [
+  [0, "Base"],
+  [25, "Super Saiyajin"],
+  [50, "Super Saiyajin 2"],
+  [75, "Super Saiyajin 3"],
+  [100, "Ultra Instinto"]
+];
+
+function guardarRecord() {
+  try { localStorage.setItem("kiRecord", record); } catch (e) {}
+}
+// Reinicia una animación CSS añadiendo su clase de nuevo
+function efecto(el, clase = "go") {
+  el.classList.remove(clase);
+  void el.offsetWidth;
+  el.classList.add(clase);
+}
+kiOrb.addEventListener("animationend", e => {
+  if (e.animationName === "ki-pop") kiOrb.classList.remove("pop");
+});
 
 function updateKi() {
+  const poder = Math.round(ki * 92);
+  const nivel = formas.filter(([min]) => ki >= min).length - 1;
   kiFill.style.width = ki + "%";
-  kiOrb.style.setProperty("--p", ki);
-  kiLevel.textContent = Math.round(ki * 92).toLocaleString("es");
-  kiMsg.textContent = mensajes.filter(([min]) => ki >= min).pop()[1];
+  kiBox.style.setProperty("--p", ki);
+  kiLevel.textContent = poder.toLocaleString("es");
+  if (!firing) kiMsg.textContent = mensajes.filter(([min]) => ki >= min).pop()[1];
+  kiForm.textContent = formas[nivel][1];
+  kiBox.dataset.nivel = nivel;
   kiBox.classList.toggle("max", ki >= 100);
+  kiBox.classList.toggle("activa", ki > 0);
+  kiFire.hidden = ki < 100 || firing;
+  if (nivel > nivelPrev) {            // efecto al subir de forma
+    efecto(kiOnda);
+    efecto(kiFlash);
+    efecto(kiOrb, "pop");
+  }
+  nivelPrev = nivel;
+  if (poder > record) {
+    record = poder;
+    kiRecord.textContent = record.toLocaleString("es");
+  }
 }
 function startCharge() {
-  if (charging) return;
+  if (charging || firing) return;
   charging = true;
+  kiBox.classList.add("cargando");
   clearInterval(timer);
   timer = setInterval(() => { ki = Math.min(100, ki + 1.5); updateKi(); }, 40);
 }
 function stopCharge() {
   if (!charging) return;
   charging = false;
+  kiBox.classList.remove("cargando");
+  guardarRecord();
   clearInterval(timer);
   timer = setInterval(() => {
     if (ki >= 100) return clearInterval(timer); // al máximo se queda cargado
@@ -194,8 +243,42 @@ document.addEventListener("keydown", e => {
   if (e.code === "Space" && e.target === document.body) { e.preventDefault(); startCharge(); }
 });
 document.addEventListener("keyup", e => { if (e.code === "Space") stopCharge(); });
+
+kiFire.addEventListener("click", () => {
+  if (ki < 100 || firing) return;
+  firing = true;
+  clearInterval(timer);
+  guardarRecord();
+  kiFire.hidden = true;
+  kiMsg.textContent = "¡¡KA-ME-HA-ME-HAAA!!";
+  kiBox.classList.add("disparando");              // el orbe se comprime
+  fireWait = setTimeout(() => {
+    kiBox.classList.remove("disparando");
+    efecto(kiBeam, "fire");
+    efecto(kiFlash);
+    efecto(kiOnda);
+    timer = setInterval(() => {                   // la carga se descarga poco a poco
+      ki = Math.max(0, ki - 3.5);
+      updateKi();
+      if (ki === 0) {
+        clearInterval(timer);
+        fireWait = setTimeout(() => {
+          firing = false;
+          kiBeam.classList.remove("fire");
+          updateKi();
+        }, 300);
+      }
+    }, 40);
+  }, 600);
+});
+
 document.getElementById("ki-reset").addEventListener("click", () => {
-  clearInterval(timer); charging = false; ki = 0; updateKi();
+  clearInterval(timer);
+  clearTimeout(fireWait);
+  charging = false; firing = false;
+  kiBeam.classList.remove("fire");
+  kiBox.classList.remove("cargando", "disparando");
+  ki = 0; updateKi();
 });
 updateKi();
 
