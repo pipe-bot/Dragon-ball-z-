@@ -208,29 +208,79 @@ a { color: inherit; text-decoration: none; }
 .detalle h4 { font-family: "Bangers", cursive; letter-spacing: 1px; color: var(--yellow); font-size: 1.2rem; margin: 14px 0 4px; }
 .detalle ul { padding-left: 20px; color: var(--muted); font-size: .92rem; }
 
-/* ===== Minijuego de ki: formas, récord y Kamehameha ===== */
-[hidden] { display: none !important; }
-
-.ki-box { --aura: var(--blue); --s: 0px; }
+/* ===== Ki ===== */
+.ki-box { --aura: var(--blue); --s: 0px; max-width: 520px; margin: 0 auto; text-align: center; background: var(--card); padding: 36px; border-radius: var(--radius); }
 .ki-box[data-nivel="1"] { --aura: #ffd400; }
 .ki-box[data-nivel="2"] { --aura: #ffc400; --s: 1px; }
 .ki-box[data-nivel="3"] { --aura: #ff9d00; --s: 2px; }
 .ki-box[data-nivel="4"] { --aura: #dfe8ff; --s: 3px; }
 
 .ki-stage { position: relative; height: 90px; margin: 0 auto 24px; }
-.ki-stage .ki-orb {
-  position: relative; z-index: 2; margin: 0 auto;
+.ki-orb {
+  position: relative; z-index: 2;
+  width: 90px; height: 90px; margin: 0 auto; border-radius: 50%;
   background: radial-gradient(circle at 35% 35%, #fff, var(--aura) 60%, transparent 75%);
   box-shadow: 0 0 calc(10px + var(--p, 0) * 0.8px) var(--aura);
+  transform: scale(calc(1 + var(--p, 0) / 120));
+  transition: transform .1s, box-shadow .1s;
 }
-.ki-fill { background: linear-gradient(90deg, var(--blue), var(--aura)); }
-
 .ki-form {
   font-family: "Bangers", cursive; font-size: 1.7rem; letter-spacing: 1px;
   color: var(--aura); text-shadow: 0 0 12px var(--aura); margin-bottom: 12px;
 }
+.ki-meter { height: 18px; background: #0b1026; border-radius: 999px; overflow: hidden; }
+.ki-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--blue), var(--aura)); transition: width .1s; }
+.ki-level { margin-top: 14px; font-size: 1.2rem; }
+.ki-level strong { color: var(--yellow); font-family: "Bangers", cursive; font-size: 1.8rem; }
 .ki-record { color: var(--muted); font-size: .95rem; }
 .ki-record strong { color: var(--yellow); }
+.ki-msg { color: var(--muted); min-height: 1.6em; margin-bottom: 18px; }
+.ki-box.max .ki-orb { animation: pulse .5s infinite; }
+.ki-box .btn { margin: 4px; user-select: none; }
+
+/* Aura (llama de energía) */
+.ki-aura {
+  position: absolute; left: 50%; top: 50%; width: 150px; height: 180px; margin: -110px 0 0 -75px;
+  border-radius: 50% 50% 45% 45% / 65% 65% 35% 35%;
+  background: radial-gradient(ellipse at 50% 75%, var(--aura) 0%, transparent 70%);
+  opacity: 0; scale: calc(.5 + var(--p, 0) / 100 * .9); transform-origin: 50% 80%;
+  pointer-events: none; z-index: 0;
+}
+.ki-box.activa .ki-aura {
+  opacity: calc(var(--p, 0) / 100 * .85 + .1);
+  animation: ki-llama .5s ease-in-out infinite;
+}
+@keyframes ki-llama {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  50% { transform: translateY(-5px) scaleY(1.1); }
+}
+
+/* Chispas (más cantidad cuanto más alto el nivel) */
+.ki-particulas { position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; z-index: 1; }
+.ki-particulas i {
+  position: absolute; left: 0; top: 0; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--aura); box-shadow: 0 0 8px var(--aura); opacity: 0;
+}
+.ki-box.cargando .ki-particulas i { animation: ki-chispa 1s linear infinite; animation-delay: var(--d); }
+@keyframes ki-chispa {
+  0% { transform: translate(var(--x), 0) scale(1); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translate(calc(var(--x) * 1.6), -95px) scale(.3); opacity: 0; }
+}
+.ki-particulas i:nth-child(1) { --x: -40px; --d: 0s; }
+.ki-particulas i:nth-child(2) { --x: 25px; --d: .15s; }
+.ki-particulas i:nth-child(3) { --x: -15px; --d: .3s; }
+.ki-particulas i:nth-child(4) { --x: 45px; --d: .45s; }
+.ki-particulas i:nth-child(5) { --x: -30px; --d: .6s; }
+.ki-particulas i:nth-child(6) { --x: 10px; --d: .75s; }
+.ki-particulas i:nth-child(7) { --x: 35px; --d: .9s; }
+.ki-particulas i:nth-child(8) { --x: -45px; --d: .2s; }
+.ki-particulas i:nth-child(9) { --x: 0px; --d: .5s; }
+.ki-particulas i:nth-child(10) { --x: 20px; --d: .8s; }
+.ki-box[data-nivel="0"] .ki-particulas i:nth-child(n+4) { display: none; }
+.ki-box[data-nivel="1"] .ki-particulas i:nth-child(n+6) { display: none; }
+.ki-box[data-nivel="2"] .ki-particulas i:nth-child(n+8) { display: none; }
+.ki-box[data-nivel="3"] .ki-particulas i:nth-child(n+10) { display: none; }
 
 /* Temblor mientras cargas (solo desde SSJ2) */
 .ki-box.cargando[data-nivel="2"],
@@ -242,21 +292,57 @@ a { color: inherit; text-decoration: none; }
   75% { transform: translate(var(--s), calc(var(--s) * -1)); }
 }
 
-/* Rayo del Kamehameha */
+/* Efecto al cambiar de forma: onda, destello y golpe del orbe */
+.ki-onda {
+  position: absolute; left: 50%; top: 50%; width: 90px; height: 90px; margin: -45px 0 0 -45px;
+  border: 3px solid var(--aura); border-radius: 50%; box-shadow: 0 0 14px var(--aura);
+  opacity: 0; pointer-events: none; z-index: 1;
+}
+.ki-onda.go { animation: ki-onda .6s ease-out; }
+@keyframes ki-onda {
+  0% { transform: scale(1); opacity: .9; }
+  100% { transform: scale(3.2); opacity: 0; }
+}
+.ki-flash {
+  position: absolute; left: 50%; top: 50%; width: 200px; height: 200px; margin: -100px 0 0 -100px;
+  background: radial-gradient(circle, #fff 0%, transparent 65%);
+  opacity: 0; pointer-events: none; z-index: 3;
+}
+.ki-flash.go { animation: ki-flash .45s ease-out; }
+@keyframes ki-flash {
+  0% { opacity: 0; transform: scale(.3); }
+  30% { opacity: .9; }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+.ki-stage .ki-orb.pop { animation: ki-pop .35s ease-out; }
+@keyframes ki-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+/* Kamehameha: el orbe se comprime y sale el rayo con núcleo blanco */
+.ki-box.disparando .ki-orb { animation: ki-comprimir .6s ease-in forwards; }
+@keyframes ki-comprimir {
+  0% { transform: scale(1); }
+  100% { transform: scale(.55); }
+}
 .ki-beam {
-  position: absolute; left: 50%; top: 50%; width: 50%; height: 34px; margin-top: -17px;
-  border-radius: 999px; pointer-events: none; opacity: 0;
-  background: linear-gradient(90deg, #fff, var(--aura), transparent);
-  box-shadow: 0 0 24px var(--aura);
+  position: absolute; left: 50%; top: 50%; width: 50%; height: 40px; margin-top: -20px;
+  border-radius: 999px; pointer-events: none; opacity: 0; z-index: 1;
+  background: linear-gradient(90deg, #fff 0%, #fff 25%, var(--aura) 60%, transparent 100%);
+  box-shadow: 0 0 28px var(--aura);
   transform-origin: left center; transform: scaleX(0);
 }
-.ki-beam.fire { animation: ki-beam .9s ease-out forwards; }
+.ki-beam.fire { animation: ki-beam 1.2s ease-out forwards; }
 @keyframes ki-beam {
-  0% { transform: scaleX(0); opacity: 1; }
-  60% { transform: scaleX(1); opacity: 1; }
-  100% { transform: scaleX(1); opacity: 0; }
+  0% { transform: scaleX(0) scaleY(.6); opacity: 1; }
+  30% { transform: scaleX(1) scaleY(1); opacity: 1; }
+  80% { transform: scaleX(1) scaleY(1.15); opacity: 1; }
+  100% { transform: scaleX(1) scaleY(.4); opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .ki-box.cargando { animation: none !important; }
+  .ki-aura, .ki-particulas i, .ki-onda, .ki-flash { animation: none !important; }
 }
